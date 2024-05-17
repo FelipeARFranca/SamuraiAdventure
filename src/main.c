@@ -16,21 +16,22 @@ int map_index = 0;
 // player
 
 int hp = 7;
-char viewside = 'U';
+char viewside;
 int x = 20, y = 20;
 
 //sword
-int swordPrevX, swordPrevY;
+int swordX, swordY;
 int swordactivetime = 0;
 
 // inimigo
 
 int enemyHP = 2;
 char enemyViewside;
-int enemystun = 0;
 int enemyX = 10, enemyY = 10;
 int enemyPrevX, enemyPrevY;
 int enemyTickCount = 0, enemySpeed = 4;
+int enemystun = 0;
+int enemyspawn = 0;
 
 int enemyCollision(int x, int y) {
     if(enemyX == x && enemyY == y) {
@@ -48,42 +49,86 @@ int collision(int originx, int originy, int targetx, int targety) {
   }
 }
 
+void printSword() {
+  screenSetColor(CYAN, DARKGRAY);
+  screenGotoxy(swordX, swordY);
+  printf(" ");
+
+  if(viewside == 'U') {
+    screenGotoxy(x, y-1);
+    printf("⟘");
+
+    swordX = x;
+    swordY = y - 1;
+
+  } else if(viewside == 'D') {
+    screenGotoxy(x, y+1);
+    printf("⟙");
+    swordX = x;
+    swordY = y + 1;
+
+  } else if(viewside == 'L') {
+    screenGotoxy(x-2, y);
+    printf("⟞");
+    swordX = x - 2;
+    swordY = y;
+
+  } else if(viewside == 'R') {
+    screenGotoxy(x+2, y);
+    printf("⟝");
+    swordX = x + 2;
+    swordY = y;
+  }
+}
+
 void enemyMoviment() { 
+  if(enemystun > 0) {
+    enemystun--;
+    return;
+  }
 
-    if(enemystun > 0) {
-      enemystun--;
-      return;
-    }
+  if(enemyTickCount < enemySpeed) {
+      enemyTickCount++;
+  } else {
+      enemyTickCount = 0;
 
-    if(enemyTickCount < enemySpeed) {
-        enemyTickCount++;
-    } else {
-        enemyTickCount = 0;
-
-        if(enemyX > x && enemyX-2 != x) {
-            enemyX -= 2;
-            enemyViewside = 'L';
-        } else if(enemyX < x && enemyX+2 != x) {
-            enemyX += 2;
-            enemyViewside = 'R';
-        } 
-
-        if(enemyY > y && enemyY-1 != y) {
-            enemyY -= 1;
-            enemyViewside = 'U';
-        } else if(enemyY < y && enemyY+1 != y) {
-            enemyY += 1;
-            enemyViewside = 'D';
-        } 
-
-        // dano
-        if(collision(enemyX, enemyY, x, y) == 1) {
-          hp--;
+      //colisão com a espada do player
+      if(swordactivetime > 0) {
+        if(collision(enemyX, enemyY, swordX, swordY) == 1) {
+          enemyHP--;
+          if(enemyHP == 0) {
+            enemyspawn = 1;
+            printSword();
+            return;
+          }
           enemystun = 30;
         }
-        
-    }
-}  
+      }
+
+      if(enemyX > x && enemyX-2 != x && enemyX-2 != swordX ) {
+          enemyX -= 2;
+          enemyViewside = 'L';
+      } else if(enemyX < x && enemyX+2 != x && enemyX+2 != swordX) {
+          enemyX += 2;
+          enemyViewside = 'R';
+      } 
+
+      if(enemyY > y && enemyY-1 != y && enemyY-1 != swordY) {
+          enemyY -= 1;
+          enemyViewside = 'U';
+      } else if(enemyY < y && enemyY+1 != y && enemyY+1 != swordY) {
+          enemyY += 1;
+          enemyViewside = 'D';
+      } 
+
+      // dano no player
+      if(collision(enemyX, enemyY, x, y) == 1) {
+        hp--;
+        enemystun = 20;
+      }
+  }
+}
+  
 
 void printEnemy() {
     screenGotoxy(enemyPrevX, enemyPrevY);
@@ -122,37 +167,6 @@ int map_collision(int x, int y) {
   }
 }
 
-void printSword() {
-  screenSetColor(CYAN, DARKGRAY);
-  screenGotoxy(swordPrevX, swordPrevY);
-  printf(" ");
-
-  if(viewside == 'U') {
-    screenGotoxy(x, y-1);
-    printf("⟘");
-    swordPrevX = x;
-    swordPrevY = y - 1;
-
-  } else if(viewside == 'D') {
-    screenGotoxy(x, y+1);
-    printf("⟙");
-    swordPrevX = x;
-    swordPrevY = y + 1;
-
-  } else if(viewside == 'L') {
-    screenGotoxy(x-2, y);
-    printf("⟞");
-    swordPrevX = x - 2;
-    swordPrevY = y;
-
-  } else if(viewside == 'R') {
-    screenGotoxy(x+2, y);
-    printf("⟝");
-    swordPrevX = x + 2;
-    swordPrevY = y;
-  }
-}
-
 void printPlayer(int nextX, int nextY) {
   screenSetColor(CYAN, DARKGRAY);
   screenGotoxy(x, y);
@@ -170,26 +184,13 @@ void printxy() {
   screenGotoxy(2, 2);
   printf(" Enemy  X: %d Y: %d S: %c  ", enemyX, enemyY, enemyViewside);
   screenGotoxy(2, 3);
-  printf(" HP: %d ", hp);
+  printf(" HP: %d Enemy HP: %d", hp, enemyHP);
 }
 
 void printKey(int ch) {
   screenSetColor(YELLOW, DARKGRAY);
-  screenGotoxy(35, 22);
-  printf("Key code :");
-
-  screenGotoxy(34, 23);
-  printf("            ");
-
-  if (ch == 27)
-    screenGotoxy(36, 23);
-  else
-    screenGotoxy(39, 23);
-
-  printf("%d ", ch);
-  while (keyhit()) {
-    printf("%d ", readch());
-  }
+  screenGotoxy(34, 22);
+  printf("Key code: %d ", ch);
 }
 
 int main() {
@@ -252,6 +253,7 @@ int main() {
     // Handle user input
     if (keyhit()) {
       ch = readch();
+      printKey(ch);
     }
 
     // Update game state (move elements, verify collision, etc)
@@ -284,12 +286,18 @@ int main() {
         ch = 0;
       }
 
-      if(ch = 90) {
-        if(swordactivetime > 0) {
+      if(swordactivetime > 0) {
           printSword();
           swordactivetime--;
-        } else {
-          swordactivetime = 20;
+          if(swordactivetime == 0) {
+            screenGotoxy(swordX, swordY);
+            printf(" ");
+          }
+      }
+
+      if(ch == 122) {
+        if(!(swordactivetime > 0)) {
+          swordactivetime = 100;
           printSword();
         }
       }
@@ -304,7 +312,12 @@ int main() {
       print_MAP();
       printPlayer(newX, newY);
       printxy();
-      printEnemy();
+
+      if(enemyspawn == 0) printEnemy();
+      else {
+        screenGotoxy(enemyPrevX, enemyPrevY);
+        printf(" ");
+      }
       screenUpdate();
     }
   }
