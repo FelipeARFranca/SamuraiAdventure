@@ -16,22 +16,25 @@ int map_index = 0;
 // player
 
 int hp = 7;
-char viewside;
 int x = 20, y = 20;
+char viewside;
+int playerDamageBlink = 0;
 
-//sword
 int swordX, swordY;
 int swordactivetime = 0;
 
 // inimigo
+int enemyspawn = 0;
 
 int enemyHP = 2;
+int enemySpeed = 4, enemyTickCount = 0;
+int enemyX = 10, enemyY = 10; // x e y iniciais do inimigo
 char enemyViewside;
-int enemyX = 10, enemyY = 10;
 int enemyPrevX, enemyPrevY;
-int enemyTickCount = 0, enemySpeed = 4;
+
 int enemystun = 0;
-int enemyspawn = 0;
+int enemyDamageBlink = 0;
+int enemyDamaged = 0;
 
 int enemyCollision(int x, int y) {
     if(enemyX == x && enemyY == y) {
@@ -91,10 +94,12 @@ void enemyMoviment() {
       enemyTickCount++;
   } else {
       enemyTickCount = 0;
+      enemyDamaged = 0;
 
       //colisão com a espada do player
       if(swordactivetime > 0) {
         if(collision(enemyX, enemyY, swordX, swordY) == 1) {
+          enemyDamageBlink = 2;
           enemyHP--;
           if(enemyHP == 0) {
             enemyspawn = 1;
@@ -102,6 +107,7 @@ void enemyMoviment() {
             return;
           }
           enemystun = 30;
+          enemyDamaged = 1;
         }
       }
 
@@ -125,6 +131,7 @@ void enemyMoviment() {
       if(collision(enemyX, enemyY, x, y) == 1) {
         hp--;
         enemystun = 20;
+        playerDamageBlink = 2;
       }
   }
 }
@@ -137,8 +144,16 @@ void printEnemy() {
     enemyMoviment();
 
     screenGotoxy(enemyX, enemyY);
-    screenSetColor(RED, DARKGRAY);
-    printf("鬼");
+
+    if(enemyDamageBlink == 0) {
+      if(enemyDamaged == 0) screenSetColor(RED, DARKGRAY); 
+      else screenSetColor(YELLOW, DARKGRAY);
+  
+      printf("鬼");
+    } else {
+      printf(" ");
+      enemyDamageBlink--;
+    }
 
     enemyPrevX = enemyX;
     enemyPrevY = enemyY;  
@@ -174,7 +189,11 @@ void printPlayer(int nextX, int nextY) {
   x = nextX;
   y = nextY;
   screenGotoxy(x, y);
-  printf("侍");
+   if(playerDamageBlink == 0) printf("侍");
+    else {
+      printf(" ");
+      playerDamageBlink--;
+    }
 }
 
 void printxy() {
