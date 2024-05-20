@@ -7,7 +7,7 @@
 // mapa
 
 typedef struct map {
-  int map_[MAXX][25];
+  int map_[MAXX][26];
 } mapa;
 
 //inventário do jogador
@@ -43,20 +43,37 @@ int swordX, swordY;
 int swordactivetime = 0;
 int swordstun = 0;
 
-// inimigo
+// inimigo BlueOni
 int BlueOni_spawn = 0;
+int BlueOni_location = 1;
 
 int BlueOni_hp = 2;
-int BlueOni_speed = 4, BlueOni_tickCount = 0;
+int BlueOni_speed = 3, BlueOni_tickCount = 0;
 int BlueOni_x = 10, BlueOni_y = 10; // x e y iniciais do inimigo
 int BlueOni_prevX, BlueOni_prevY;
+int BlueOni_damage = 1;
 
 int BlueOni_stun = 0;
 int BlueOni_damageBlink = 0;
 int BlueOni_damaged = 0;
 
-int enemyCollision(int x, int y) {
-    if(map_index == 1 && BlueOni_spawn == 0 && BlueOni_x == x && BlueOni_y == y) {
+// inimigo RedOni
+
+int RedOni_spawn = 0;
+int RedOni_location = 0;
+
+int RedOni_hp = 6;
+int RedOni_speed = 5, RedOni_tickCount = 0;
+int RedOni_x = 20, RedOni_y = 20;
+int RedOni_prevX, RedOni_prevY;
+int RedOni_damage = 2;
+
+int RedOni_stun = 0;
+int RedOni_damageBlink = 0;
+int RedOni_damaged = 0;
+
+int enemyCollision(int x, int y, int enemylocation, int spawn, int enemyX, int enemyY) {
+    if(map_index == enemylocation && spawn == 0 && enemyX == x && enemyY == y) {
         return 1;
     } else {
         return 0;
@@ -120,80 +137,84 @@ void printSword() {
   }
 }
 
-void enemyMoviment() { 
-  if(BlueOni_stun > 0) {
-    BlueOni_stun--;
+void enemyMoviment(int *enemy_spawn, int *enemyX, int *enemyY, int *enemy_damageBlink, int *enemy_hp, int enemy_speed, int *enemy_tickCount, int *enemy_stun, int *enemy_damaged, int enemy_damage) { 
+  
+  if(*enemy_stun > 0) {
+    *enemy_stun -= 1;  
     return;
   }
 
-  if(BlueOni_tickCount < BlueOni_speed) {
-      BlueOni_tickCount++;
+  if(*enemy_tickCount < enemy_speed) {
+      *enemy_tickCount += 1;   
   } else {
-      BlueOni_tickCount = 0;
-      BlueOni_damaged = 0;
+      *enemy_tickCount = 0;
+      *enemy_damaged = 0;
 
       //colisão com a espada do player
       if(swordactivetime > 0 & swordstun == 0) {
-        if(collision(BlueOni_x, BlueOni_y, swordX, swordY) == 1) {
+        if(collision(*enemyX, *enemyY, swordX, swordY) == 1) {
           swordstun = 40;
           screenGotoxy(swordX, swordY);
           printf(" ");
           
-          BlueOni_damageBlink = 2;
-          BlueOni_hp--;
+          *enemy_damageBlink = 2;
+          *enemy_hp -= 1;
 
-          if(BlueOni_hp == 0) {
-            BlueOni_spawn = 1;
-            screenGotoxy(BlueOni_prevX, BlueOni_prevY);
+          if(*enemy_hp == 0) {
+            *enemy_spawn = 1;
+            screenGotoxy(*enemyX, *enemyY);
             printf(" ");
             return;
           }
-          BlueOni_stun = 30;
-          BlueOni_damaged = 1;
+          *enemy_stun = 30;
+          *enemy_damaged = 1;
           
         }
       }
       
 
-      if(BlueOni_x > x && BlueOni_x-2 != x && BlueOni_x-2 != swordX) {
-          BlueOni_x -= 2;
-      } else if(BlueOni_x < x && BlueOni_x+2 != x && BlueOni_x+2 != swordX) {
-          BlueOni_x += 2;
+      if(*enemyX > x && *enemyX-2 != x && *enemyX-2 != swordX) {
+          *enemyX -= 2;
+      } else if(*enemyX < x && *enemyX+2 != x && *enemyX+2 != swordX) {
+          *enemyX += 2;
       } 
       
-      if(BlueOni_y > y && BlueOni_y-1 != y && BlueOni_y-1 != swordY) {
-          BlueOni_y -= 1;
-      } else if(BlueOni_y < y && BlueOni_y+1 != y && BlueOni_y+1 != swordY) {
-          BlueOni_y += 1;
+      if(*enemyY > y && *enemyY-1 != y && *enemyY-1 != swordY) {
+          *enemyY -= 1;
+      } else if(*enemyY < y && *enemyY+1 != y && *enemyY+1 != swordY) {
+          *enemyY += 1;
       } 
 
       // dano no player
-      if(collision(BlueOni_x, BlueOni_y, x, y) == 1) {
-        hp--;
-        BlueOni_stun = 20;
+      if(collision(*enemyX, *enemyY, x, y) == 1) {
+        hp -= enemy_damage;
+        *enemy_stun = 20;
         playerDamageBlink = 2;
       }
   }
 }
   
 
-void printEnemy() {
-    screenGotoxy(BlueOni_x, BlueOni_y);
+void printEnemy(int enemyX, int enemyY, int *enemyPrevX, int *enemyPrevY, int *enemyDamageBlink, int enemyDamaged, int color) {
+    screenGotoxy(*enemyPrevX, *enemyPrevY);
     printf(" ");
 
-    enemyMoviment();
 
-    screenGotoxy(BlueOni_x, BlueOni_y);
+    screenGotoxy(enemyX, enemyY);
 
-    if(BlueOni_damageBlink == 0) {
-      if(BlueOni_damaged == 0) screenSetColor(BLUE, DARKGRAY); 
-      else screenSetColor(YELLOW, DARKGRAY);
-  
+    if(*enemyDamageBlink == 0) {    
+      if(enemyDamaged != 0) screenSetColor(YELLOW, DARKGRAY); 
+      else if(color == 1)screenSetColor(BLUE, DARKGRAY);
+      else if(color == 2)screenSetColor(RED, DARKGRAY);
+
       printf("鬼");
     } else {
       printf(" ");
-      BlueOni_damageBlink--;
+      *enemyDamageBlink -= 1;
     }
+    *enemyPrevX = enemyX;
+    *enemyPrevY = enemyY;
+
 }
 
 void print_MAP() {
@@ -262,8 +283,13 @@ void map_clear(){
     }
   }
 
-  if(BlueOni_spawn == 0 && map_index == 1) {
+  if(BlueOni_spawn == 0 && map_index == BlueOni_location) {
     screenGotoxy(BlueOni_x, BlueOni_y);
+    printf(" ");
+  }
+
+  if(RedOni_spawn == 0 && map_index == RedOni_location) {
+    screenGotoxy(RedOni_x, RedOni_y);
     printf(" ");
   }
 }
@@ -285,9 +311,11 @@ void printPlayer(int nextX, int nextY) {
 void printxy() {
   screenSetColor(BLUE, DARKGRAY);
   screenGotoxy(2, 24);
-  printf("Player HP: %d X: %d Y: %d S: %c T: %d ", hp, x, y, viewside, swordstun);
+  printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, BlueOni_tickCount);
   screenGotoxy(2, 25);
-  printf("Blue Oni HP: %d X: %d Y: %d   ", BlueOni_hp, BlueOni_x, BlueOni_y);
+  printf("Blue Oni | HP: %d | X: %d | Y: %d   ", BlueOni_hp, BlueOni_x, BlueOni_y);
+  screenGotoxy(2, 26);
+  printf("Red Oni | HP: %d | X: %d | Y: %d   ", RedOni_hp, RedOni_x, RedOni_y);
 }
 
 void printKey(int ch) {
@@ -467,11 +495,13 @@ int main() {
 
     // Update game state (move elements, verify collision, etc)
     if (timerTimeOver() == 1) {
-      if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1) == 0){
+
+      //W
+      if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0){
         if(y - 1 == 0 && map_index == 1) {
           map_clear();
           map_index = 0;
-          newY = 23;
+          newY = 23;  
         } else {
           if (map_index == 0 && x == katana.object_x && y - 1 == katana.object_y && player_inventory.weapon == 0){
             player_inventory.weapon++;
@@ -483,7 +513,9 @@ int main() {
         }
         viewside = 'U';
         ch = 0;
-      } else if (ch == 115 /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1) == 0){
+
+      //S
+      } else if (ch == 115 /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0){
         if(y + 1 == 24 && map_index == 0) {
           map_clear();
           map_index = 1;
@@ -499,7 +531,9 @@ int main() {
         }
         viewside = 'D';
         ch = 0;
-      } else if (ch == 97 /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y) == 0) {
+
+      //A
+      } else if (ch == 97 /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0) {
         if (map_index == 0 && x - 2 == katana.object_x && y == katana.object_y && player_inventory.weapon == 0){
             player_inventory.weapon++;
           }
@@ -509,12 +543,14 @@ int main() {
         newX = x - 2;
         viewside = 'L';
         ch = 0;
-      } else if (ch == 100 /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y) == 0) {
+
+      //D
+      } else if (ch == 100 /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0) {
         if (map_index == 0 && x + 2 == katana.object_x && y == katana.object_y && player_inventory.weapon == 0){
             player_inventory.weapon++;
           }
         if (map_index == 1 && x + 2 == magatama.object_x && y == magatama.object_y && player_inventory.key == 0){
-            player_inventory.key++;
+            player_inventory.key++; 
           }
         newX = x + 2;
         viewside = 'R';
@@ -573,11 +609,21 @@ int main() {
         printf(" ");
       }
 
+      if(BlueOni_spawn == 0 && map_index == BlueOni_location) {
+        enemyMoviment(&BlueOni_spawn, &BlueOni_x, &BlueOni_y, &BlueOni_damageBlink, &BlueOni_hp, BlueOni_speed, &BlueOni_tickCount, &BlueOni_stun, &BlueOni_damaged, 2);
+        printEnemy(BlueOni_x, BlueOni_y, &BlueOni_prevX, &BlueOni_prevY, &BlueOni_damageBlink, BlueOni_damaged, BlueOni_damage);
+      }
+
+      if(RedOni_spawn == 0 && map_index == RedOni_location) {
+        enemyMoviment(&RedOni_spawn, &RedOni_x, &RedOni_y, &RedOni_damageBlink, &RedOni_hp, RedOni_speed, &RedOni_tickCount, &RedOni_stun, &RedOni_damaged, 2);
+        printEnemy(RedOni_x, RedOni_y, &RedOni_prevX, &RedOni_prevY, &RedOni_damageBlink, RedOni_damaged, RedOni_damage);
+      }
+
+
       printPlayer(newX, newY);
       printxy();
       print_inv_hud(player_inventory.weapon, player_inventory.key);
 
-      if(BlueOni_spawn == 0 && map_index == 1) printEnemy();
       screenUpdate();
     }
   }
