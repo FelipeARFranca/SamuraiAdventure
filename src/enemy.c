@@ -1,6 +1,17 @@
 #include "enemy.h"
 #include "screen.h"
 
+extern int hp;
+extern int map_index;
+extern int playerDamageBlink;
+extern int x;
+extern int y;
+
+extern int swordactivetime;
+extern int swordstun;
+extern int swordX;
+extern int swordY;
+
 int collision(int originx, int originy, int targetx, int targety) {
   if((originx+2 == targetx || originx-2 == targetx || originx == targetx) && (originy+1 == targety || originy-1 == targety || originy == targety)) {
     return 1;
