@@ -242,7 +242,7 @@ void draw_map() {
   
   
 
-  for (int j = 30; j < 48; j++) {
+  for (int j = 32; j < 48; j++) {
     game_map[0].map_[j][23] = '0';
   }
 
@@ -258,7 +258,7 @@ void draw_map() {
   }
 
 
-  for (int j = 30; j < 48; j++) {
+  for (int j = 32; j < 48; j++) {
     game_map[1].map_[j][1] = '0';
   }
   
