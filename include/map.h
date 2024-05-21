@@ -8,6 +8,7 @@ typedef struct map {
   int map_[MAXX][MAXY];
 } mapa;
 
+int map_change(int index, int map_limitX, int map_limitY);
 void print_MAP();
 int map_collision(int x, int y);
 void map_clear();
