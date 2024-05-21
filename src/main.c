@@ -193,7 +193,7 @@ int main() {
       }
 
       if (player_inventory.weapon != 0 && swordstun == 0){
-        if(ch == 122 ) {
+        if(ch == 32 ) {
           if(swordactivetime == 0) {
             swordactivetime = 15;
             printSword();
@@ -226,12 +226,12 @@ int main() {
       }
 
       if(BlueOni_spawn == 0 && map_index == BlueOni_location) {
-        enemyMoviment(&BlueOni_spawn, &BlueOni_x, &BlueOni_y, &BlueOni_damageBlink, &BlueOni_hp, BlueOni_speed, &BlueOni_tickCount, &BlueOni_stun, &BlueOni_damaged, 2);
+        enemyMoviment(&BlueOni_spawn, &BlueOni_x, &BlueOni_y, &BlueOni_damageBlink, &BlueOni_hp, BlueOni_speed, &BlueOni_tickCount, &BlueOni_stun, &BlueOni_damaged, BlueOni_damage);
         printEnemy(BlueOni_x, BlueOni_y, &BlueOni_prevX, &BlueOni_prevY, &BlueOni_damageBlink, BlueOni_damaged, BlueOni_damage);
       }
 
       if(RedOni_spawn == 0 && map_index == RedOni_location) {
-        enemyMoviment(&RedOni_spawn, &RedOni_x, &RedOni_y, &RedOni_damageBlink, &RedOni_hp, RedOni_speed, &RedOni_tickCount, &RedOni_stun, &RedOni_damaged, 2);
+        enemyMoviment(&RedOni_spawn, &RedOni_x, &RedOni_y, &RedOni_damageBlink, &RedOni_hp, RedOni_speed, &RedOni_tickCount, &RedOni_stun, &RedOni_damaged, RedOni_damage);
         printEnemy(RedOni_x, RedOni_y, &RedOni_prevX, &RedOni_prevY, &RedOni_damageBlink, RedOni_damaged, RedOni_damage);
       }
 
