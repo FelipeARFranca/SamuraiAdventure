@@ -13,6 +13,16 @@ extern int swordDamage;
 extern int swordX;
 extern int swordY;
 
+extern int BlueOni_x;
+extern int BlueOni_y;
+extern int BlueOni_spawn;
+extern int BlueOni_location;
+
+extern int RedOni_x;
+extern int RedOni_y;
+extern int RedOni_spawn;
+extern int RedOni_location;
+
 int collision(int originx, int originy, int targetx, int targety) {
   if((originx+2 == targetx || originx-2 == targetx || originx == targetx) && (originy+1 == targety || originy-1 == targety || originy == targety)) {
     return 1;
@@ -78,11 +88,15 @@ void enemyMoviment(int *enemy_spawn, int *enemyX, int *enemyY, int *enemy_damage
   }
 }
 
-int enemyCollision(int x, int y, int enemylocation, int spawn, int enemyX, int enemyY) {
-    if(map_index == enemylocation && spawn == 0 && enemyX == x && enemyY == y) {
-        return 1;
+int enemyCollision(int x, int y) {
+    if(map_index == BlueOni_location) {
+        if(BlueOni_spawn == 0 && BlueOni_x == x && BlueOni_y == y) return 1;
+        else return 0;
+    } else if(map_index == RedOni_location) {
+        if(RedOni_spawn == 0 && RedOni_x == x && RedOni_y == y) return 1;
+        else return 0;
     } else {
-        return 0;
+      return 0;
     }
 }
 

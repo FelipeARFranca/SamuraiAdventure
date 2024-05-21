@@ -21,7 +21,7 @@ object katana;
 object magatama;
 
 // player
-int hp = 7;
+int hp = 6;
 int x = 20, y = 20;
 char viewside;
 int playerDamageBlink = 0;
@@ -29,12 +29,13 @@ int playerDamageBlink = 0;
 int swordX, swordY;
 int swordactivetime = 0;
 int swordstun = 0;
+int swordDamage = 1;
 
 // inimigo BlueOni
 int BlueOni_spawn = 0;
 int BlueOni_location = 1;
 
-int BlueOni_hp = 2;
+int BlueOni_hp = 3;
 int BlueOni_speed = 3, BlueOni_tickCount = 0;
 int BlueOni_x = 10, BlueOni_y = 10; // x e y iniciais do inimigo
 int BlueOni_prevX, BlueOni_prevY;
@@ -46,9 +47,9 @@ int BlueOni_damaged = 0;
 
 // inimigo RedOni
 int RedOni_spawn = 0;
-int RedOni_location = 0;
+int RedOni_location = 2;
 
-int RedOni_hp = 6;
+int RedOni_hp = 4;
 int RedOni_speed = 5, RedOni_tickCount = 0;
 int RedOni_x = 20, RedOni_y = 20;
 int RedOni_prevX, RedOni_prevY;
@@ -100,7 +101,7 @@ int main() {
     if (timerTimeOver() == 1) {
 
       //W
-      if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0){
+      if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1) == 0){
         if(y == 1) {
           map_clear();
           map_index = map_change(map_index, x, y - 1);
@@ -118,7 +119,7 @@ int main() {
         ch = 0;
 
       //S
-      } else if (ch == 115 /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0){
+      } else if (ch == 115 /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1) == 0){
         if(y == 23) {
           map_clear();
           map_index = map_change(map_index, x, y + 1);
@@ -136,7 +137,7 @@ int main() {
         ch = 0;
 
       //A
-      } else if (ch == 97 /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0) {
+      } else if (ch == 97 /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y) == 0) {
         if (x == 0){
           map_clear();
           map_index = map_change(map_index, x - 2, y);
@@ -154,7 +155,7 @@ int main() {
         ch = 0;
 
       //D
-      } else if (ch == 100 /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0) {
+      } else if (ch == 100 /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y) == 0) {
         if (x == 80){
           map_clear();
           map_index = map_change(map_index, x + 2, y);
