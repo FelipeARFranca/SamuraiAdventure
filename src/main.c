@@ -27,10 +27,11 @@ char viewside;
 int playerDamageBlink = 0;
 
 int swordX, swordY;
+int swordDamage = 1;
 int swordactivetime = 0;
 int swordstun = 0;
 
-// inimigo BlueOni
+// inimigo BlueOni  
 int BlueOni_spawn = 0;
 int BlueOni_location = 1;
 

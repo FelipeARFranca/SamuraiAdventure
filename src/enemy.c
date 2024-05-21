@@ -9,6 +9,7 @@ extern int y;
 
 extern int swordactivetime;
 extern int swordstun;
+extern int swordDamage;
 extern int swordX;
 extern int swordY;
 
@@ -32,8 +33,8 @@ void enemyMoviment(int *enemy_spawn, int *enemyX, int *enemyY, int *enemy_damage
       *enemy_tickCount = 0;
       *enemy_damaged = 0;
 
-      //colisão com a espada do player
-      if(swordactivetime > 0 & swordstun == 0) {
+      //receber dano do player
+      if(swordactivetime > 0 && swordstun == 0) {
         if(collision(*enemyX, *enemyY, swordX, swordY) == 1) {
           swordstun = 40;
           swordactivetime = 0;
@@ -41,9 +42,9 @@ void enemyMoviment(int *enemy_spawn, int *enemyX, int *enemyY, int *enemy_damage
           printf(" ");
           
           *enemy_damageBlink = 2;
-          *enemy_hp -= 1;
+          *enemy_hp -= swordDamage;
 
-          if(*enemy_hp == 0) {
+          if(*enemy_hp <= 0) {
             *enemy_spawn = 1;
             screenGotoxy(*enemyX, *enemyY);
             printf(" ");
@@ -55,7 +56,7 @@ void enemyMoviment(int *enemy_spawn, int *enemyX, int *enemyY, int *enemy_damage
         }
       }
       
-
+      // movimentação do inimigo
       if(*enemyX > x && *enemyX-2 != x && *enemyX-2 != swordX) {
           *enemyX -= 2;
       } else if(*enemyX < x && *enemyX+2 != x && *enemyX+2 != swordX) {
