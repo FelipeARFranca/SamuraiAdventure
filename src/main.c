@@ -11,7 +11,7 @@
 #include <string.h>
 
 //mapa
-mapa game_map[2];
+mapa game_map[4];
 int map_index = 0;
 
 //inventario
@@ -22,16 +22,15 @@ object magatama;
 
 // player
 int hp = 7;
-int x = 20, y = 20; 
+int x = 20, y = 20;
 char viewside;
 int playerDamageBlink = 0;
 
 int swordX, swordY;
-int swordDamage = 1;
 int swordactivetime = 0;
 int swordstun = 0;
 
-// inimigo BlueOni  
+// inimigo BlueOni
 int BlueOni_spawn = 0;
 int BlueOni_location = 1;
 
@@ -62,7 +61,7 @@ int RedOni_damaged = 0;
 void printxy() {
   screenSetColor(BLUE, DARKGRAY);
   screenGotoxy(2, 24);
-  printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, swordactivetime);
+  printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, BlueOni_tickCount);
   screenGotoxy(2, 25);
   printf("Blue Oni | HP: %d | X: %d | Y: %d   ", BlueOni_hp, BlueOni_x, BlueOni_y);
   screenGotoxy(2, 26);
@@ -102,15 +101,15 @@ int main() {
 
       //W
       if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0){
-        if(y - 1 == 0 && map_index == 1) {
+        if(y == 1) {
           map_clear();
-          map_index = 0;
+          map_index = map_change(map_index, x, y - 1);
           newY = 23;  
         } else {
           if (map_index == 0 && x == katana.object_x && y - 1 == katana.object_y && player_inventory.weapon == 0){
             player_inventory.weapon++;
           }
-          if (map_index == 1 && x == magatama.object_x && y - 1 == magatama.object_y && player_inventory.key == 0){
+          if (map_index == 2 && x == magatama.object_x && y - 1 == magatama.object_y && player_inventory.key == 0){
             player_inventory.key++;
           }
           newY = y - 1;
@@ -120,15 +119,15 @@ int main() {
 
       //S
       } else if (ch == 115 /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0){
-        if(y + 1 == 24 && map_index == 0) {
+        if(y == 23) {
           map_clear();
-          map_index = 1;
+          map_index = map_change(map_index, x, y + 1);
           newY = 1;
         } else {
           if (map_index == 0 && x == katana.object_x && y + 1 == katana.object_y && player_inventory.weapon == 0){
             player_inventory.weapon++;
           }
-          if (map_index == 1 && x == magatama.object_x && y + 1 == magatama.object_y && player_inventory.key == 0){
+          if (map_index == 2 && x == magatama.object_x && y + 1 == magatama.object_y && player_inventory.key == 0){
             player_inventory.key++;
           }
           newY = y + 1;
@@ -138,25 +137,37 @@ int main() {
 
       //A
       } else if (ch == 97 /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0) {
-        if (map_index == 0 && x - 2 == katana.object_x && y == katana.object_y && player_inventory.weapon == 0){
-            player_inventory.weapon++;
-          }
-        if (map_index == 1 && x - 2 == magatama.object_x && y == magatama.object_y && player_inventory.key == 0){
-            player_inventory.key++;
-          }
-        newX = x - 2;
+        if (x == 0){
+          map_clear();
+          map_index = map_change(map_index, x - 2, y);
+          newX = 80;
+        } else {
+          if (map_index == 0 && x - 2 == katana.object_x && y == katana.object_y && player_inventory.weapon == 0){
+              player_inventory.weapon++;
+            }
+          if (map_index == 2 && x - 2 == magatama.object_x && y == magatama.object_y && player_inventory.key == 0){
+              player_inventory.key++;
+            }
+          newX = x - 2;
+        }
         viewside = 'L';
         ch = 0;
 
       //D
       } else if (ch == 100 /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y, BlueOni_location, BlueOni_spawn, BlueOni_x, BlueOni_y) == 0) {
-        if (map_index == 0 && x + 2 == katana.object_x && y == katana.object_y && player_inventory.weapon == 0){
-            player_inventory.weapon++;
-          }
-        if (map_index == 1 && x + 2 == magatama.object_x && y == magatama.object_y && player_inventory.key == 0){
-            player_inventory.key++; 
-          }
-        newX = x + 2;
+        if (x == 80){
+          map_clear();
+          map_index = map_change(map_index, x + 2, y);
+          newX = 0;
+        } else {
+          if (map_index == 0 && x + 2 == katana.object_x && y == katana.object_y && player_inventory.weapon == 0){
+              player_inventory.weapon++;
+            }
+          if (map_index == 2 && x + 2 == magatama.object_x && y == magatama.object_y && player_inventory.key == 0){
+              player_inventory.key++; 
+            }
+          newX = x + 2;
+        }
         viewside = 'R';
         ch = 0;
       }
@@ -205,7 +216,7 @@ int main() {
         screenGotoxy(katana.object_x, katana.object_y);
         printf(" ");
       }
-      if (map_index == 1 && player_inventory.key != 1){
+      if (map_index == 2 && player_inventory.key != 1){
         print_object(magatama.object_index, magatama.object_x, magatama.object_y);
       }
       else{
