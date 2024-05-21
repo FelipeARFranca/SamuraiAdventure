@@ -36,6 +36,7 @@ void enemyMoviment(int *enemy_spawn, int *enemyX, int *enemyY, int *enemy_damage
       if(swordactivetime > 0 & swordstun == 0) {
         if(collision(*enemyX, *enemyY, swordX, swordY) == 1) {
           swordstun = 40;
+          swordactivetime = 0;
           screenGotoxy(swordX, swordY);
           printf(" ");
           

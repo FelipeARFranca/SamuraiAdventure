@@ -61,7 +61,7 @@ int RedOni_damaged = 0;
 void printxy() {
   screenSetColor(BLUE, DARKGRAY);
   screenGotoxy(2, 24);
-  printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, BlueOni_tickCount);
+  printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, swordactivetime);
   screenGotoxy(2, 25);
   printf("Blue Oni | HP: %d | X: %d | Y: %d   ", BlueOni_hp, BlueOni_x, BlueOni_y);
   screenGotoxy(2, 26);
