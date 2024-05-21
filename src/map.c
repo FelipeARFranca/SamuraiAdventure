@@ -3,7 +3,7 @@
 #include "player.h"
 #include "objects.h"
 
-extern mapa game_map[2];
+extern mapa game_map[4];
 extern inventory player_inventory;
 extern object katana;
 extern object magatama;
@@ -19,6 +19,35 @@ extern int RedOni_spawn;
 extern int RedOni_location;
 extern int RedOni_x;
 extern int RedOni_y;
+
+int map_change(int index, int map_limitX, int map_limitY){
+  if (map_limitY == 0){
+    if (index == 1){
+      return 0;
+    }
+  }
+  else if (map_limitY == 24){
+    if (index == 0){
+      return 1;
+    }
+  }
+  else if (map_limitX > 80){
+    if (index == 1){
+      return 2;
+    }
+    else if (index == 3){
+      return 1;
+    }
+  }
+  else if (map_limitX < 0){
+    if (index == 2){
+      return 1;
+    }
+    else if (index == 1){
+      return 3;
+    }
+  }
+}
 
 int map_collision(int x, int y) {
   if (game_map[map_index].map_[x][y] == '1' || game_map[map_index].map_[x][y] == '2' || game_map[map_index].map_[x][y] == '4') {
@@ -100,6 +129,7 @@ void print_MAP() {
 void draw_map() {
   char spechar = '1';
 
+  //GOLDEN CASTLE 0 -------------------------------------------------------------------------------------------------------------------------
   for (int i = 0; i < MAXX; i++) {
     game_map[0].map_[i][1] = spechar;
     game_map[0].map_[i][23] = spechar;
@@ -216,7 +246,7 @@ void draw_map() {
     game_map[0].map_[j][23] = '0';
   }
 
-  //---------------------------------------------------------------------------------------------------------------
+  //MAP 1---------------------------------------------------------------------------------------------------------------
   for (int i = 0; i < MAXX; i++) {
     game_map[1].map_[i][1] = spechar;
     game_map[1].map_[i][23] = spechar;
@@ -227,15 +257,101 @@ void draw_map() {
     game_map[1].map_[80][j] = spechar;
   }
 
-  game_map[1].map_[20][10] = '1';
-  game_map[1].map_[20][11] = '1';
-  game_map[1].map_[21][10] = '1';
-  game_map[1].map_[21][11] = '1';
 
   for (int j = 30; j < 48; j++) {
     game_map[1].map_[j][1] = '0';
   }
+  
+  for (int j = 9; j <= 15; j++){
+    game_map[1].map_[80][j] = '0';
+    game_map[1].map_[0][j] = '0';
+  }
 
+  //MAP 2-----------------------------------------------------------------------------------------------------------------
+
+  for (int i = 0; i < MAXX; i++) {
+    game_map[2].map_[i][1] = spechar;
+    game_map[2].map_[i][23] = spechar;
+  }
+
+  for (int j = 1; j < MAXY-2; j++) {
+    game_map[2].map_[0][j] = spechar;
+    game_map[2].map_[80][j] = spechar;
+  }
+
+  for (int j = 9; j <= 15; j++){
+    game_map[2].map_[0][j] = '0';
+  }
+  
+  for (int j = 5; j <= 9; j++){
+    game_map[2].map_[10][j] = '1';
+    game_map[2].map_[11][j] = '1';
+    game_map[2].map_[69][j] = '1';
+    game_map[2].map_[70][j] = '1';
+  }
+
+  for (int j = 15; j <= 19; j++){
+    game_map[2].map_[10][j] = '1';
+    game_map[2].map_[11][j] = '1';
+    game_map[2].map_[69][j] = '1';
+    game_map[2].map_[70][j] = '1';
+  }
+
+  for (int j = 9; j <= 15; j++){
+    game_map[2].map_[15][j] = '1';
+    game_map[2].map_[16][j] = '1';
+    game_map[2].map_[64][j] = '1';
+    game_map[2].map_[65][j] = '1';
+  }
+
+  for (int j = 12; j <= 14; j++){
+    game_map[2].map_[j][9] = '1';
+    game_map[2].map_[j][15] = '1';
+  }
+
+  for (int j = 66; j <= 68; j++){
+    game_map[2].map_[j][9] = '1';
+    game_map[2].map_[j][15] = '1';
+  }
+
+  for (int j = 6; j <= 18; j++){
+    game_map[2].map_[24][j] = '1';
+    game_map[2].map_[25][j] = '1';
+    game_map[2].map_[55][j] = '1';
+    game_map[2].map_[56][j] = '1';
+  }
+
+  for (int j = 2; j <= 5; j++){
+    game_map[2].map_[33][j] = '1';
+    game_map[2].map_[34][j] = '1';
+    game_map[2].map_[46][j] = '1';
+    game_map[2].map_[47][j] = '1';
+  }
+
+  for (int j = 19; j <= 22  ; j++){
+    game_map[2].map_[33][j] = '1';
+    game_map[2].map_[34][j] = '1';
+    game_map[2].map_[46][j] = '1';
+    game_map[2].map_[47][j] = '1';
+  }
+
+  //MAP 3-----------------------------------------------------------------------------------------------------------------
+
+  for (int i = 0; i < MAXX; i++) {
+    game_map[3].map_[i][1] = spechar;
+    game_map[3].map_[i][23] = spechar;
+  }
+
+  for (int j = 1; j < MAXY-2; j++) {
+    game_map[3].map_[0][j] = spechar;
+    game_map[3].map_[80][j] = spechar;
+  }
+
+  for (int j = 9; j <= 15; j++){
+    game_map[3].map_[80][j] = '0';
+  }
+
+  //MAP 4-----------------------------------------------------------------------------------------------------------------
   player_inventory.weapon = 0;
   player_inventory.key = 0;
 
