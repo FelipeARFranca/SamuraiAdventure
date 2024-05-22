@@ -9,4 +9,10 @@ int enemyCollision(int x, int y);
 
 void printEnemy(int enemyX, int enemyY, int *enemyPrevX, int *enemyPrevY, int *enemyDamageBlink, int enemyDamaged, int color);
 
+void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink, int *boss_hp, int boss_speed, int *boss_tickCount, int *boss_stun, int *boss_damaged, int boss_damage);
+
+int Boss_collision(int originx, int originy, int x, int y);
+
+void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDamageBlink, int bossDamaged);
+
 #endif /* __ENEMY_H__ */

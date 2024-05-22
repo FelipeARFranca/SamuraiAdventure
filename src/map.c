@@ -20,6 +20,12 @@ extern int RedOni_location;
 extern int RedOni_x;
 extern int RedOni_y;
 
+extern int BossOni_spawn;
+extern int BossOni_location;
+extern int BossOni_x;
+extern int BossOni_y;
+
+
 int map_change(int index, int map_limitX, int map_limitY){
   if (map_limitY == 0){
     if (index == 1){
@@ -128,6 +134,11 @@ void map_clear(){
 
   if(RedOni_spawn == 0 && map_index == RedOni_location) {
     screenGotoxy(RedOni_x, RedOni_y);
+    printf(" ");
+  }
+
+  if(BossOni_spawn == 0 && map_index == BossOni_location) {
+    screenGotoxy(BossOni_x, BossOni_y);
     printf(" ");
   }
 }

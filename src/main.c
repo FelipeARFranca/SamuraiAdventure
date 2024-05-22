@@ -59,6 +59,20 @@ int RedOni_stun = 0;
 int RedOni_damageBlink = 0;
 int RedOni_damaged = 0;
 
+int BossOni_spawn = 0;
+int BossOni_location = 3;
+
+int BossOni_hp = 10;
+int BossOni_speed = 2, BossOni_tickCount = 0;
+int BossOni_x = 30, BossOni_y = 15; 
+int BossOni_prevX, BossOni_prevY;
+int BossOni_damage = 2;
+
+int BossOni_stun = 0;
+int BossOni_damageBlink = 0;
+int BossOni_damaged = 0;
+
+
 void printxy() {
   screenSetColor(BLUE, DARKGRAY);
   screenGotoxy(2, 24);
@@ -101,7 +115,7 @@ int main() {
     if (timerTimeOver() == 1) {
 
       //W
-      if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1) == 0){
+      if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1) == 0 && Boss_collision(BossOni_x, BossOni_y,x, y - 1) == 0){
         if (map_index == 0 && x == 40 && y == 16){
           map_clear();
           map_index = map_change(map_index, x, y - 1);
@@ -124,7 +138,7 @@ int main() {
         ch = 0;
 
       //S
-      } else if (ch == 115 /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1) == 0){
+      } else if (ch == 115 /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1) == 0 && Boss_collision(BossOni_x, BossOni_y,x, y + 1) == 0){
         if(y == 23) {
           map_clear();
           map_index = map_change(map_index, x, y + 1);
@@ -146,7 +160,7 @@ int main() {
         ch = 0;
 
       //A
-      } else if (ch == 97 /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y) == 0) {
+      } else if (ch == 97 /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y) == 0 && Boss_collision(BossOni_x, BossOni_y,x - 2,y) == 0) {
         if (x == 0){
           map_clear();
           map_index = map_change(map_index, x - 2, y);
@@ -164,7 +178,7 @@ int main() {
         ch = 0;
 
       //D
-      } else if (ch == 100 /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y) == 0) {
+      } else if (ch == 100 /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y) == 0 && Boss_collision(BossOni_x, BossOni_y,x + 2 ,y) == 0) {
         if (x == 80){
           map_clear();
           map_index = map_change(map_index, x + 2, y);
@@ -242,6 +256,11 @@ int main() {
       if(RedOni_spawn == 0 && map_index == RedOni_location) {
         enemyMoviment(&RedOni_spawn, &RedOni_x, &RedOni_y, &RedOni_damageBlink, &RedOni_hp, RedOni_speed, &RedOni_tickCount, &RedOni_stun, &RedOni_damaged, RedOni_damage);
         printEnemy(RedOni_x, RedOni_y, &RedOni_prevX, &RedOni_prevY, &RedOni_damageBlink, RedOni_damaged, RedOni_damage);
+      }
+
+      if (BossOni_spawn == 0 && map_index == BossOni_location) {
+          BossMoviment(&BossOni_spawn, &BossOni_x, &BossOni_y, &BossOni_damageBlink, &BossOni_hp, BossOni_speed, &BossOni_tickCount, &BossOni_stun, &BossOni_damaged, BossOni_damage);
+          printBoss(BossOni_x, BossOni_y, &BossOni_prevX, &BossOni_prevY, &BossOni_damageBlink, BossOni_damaged);
       }
 
 
