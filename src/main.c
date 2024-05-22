@@ -11,7 +11,7 @@
 #include <string.h>
 
 //mapa
-mapa game_map[4];
+mapa game_map[8];
 int map_index = 0;
 
 //inventario
@@ -102,7 +102,12 @@ int main() {
 
       //W
       if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1) == 0){
-        if(y == 1) {
+        if (map_index == 0 && x == 40 && y == 16){
+          map_clear();
+          map_index = map_change(map_index, x, y - 1);
+          newY = 23;
+        }
+        else if(y == 1) {
           map_clear();
           map_index = map_change(map_index, x, y - 1);
           newY = 23;  
@@ -123,7 +128,11 @@ int main() {
         if(y == 23) {
           map_clear();
           map_index = map_change(map_index, x, y + 1);
-          newY = 1;
+          if (map_index == 0){
+            newY = 16;
+          }else {
+            newY = 1;
+          }
         } else {
           if (map_index == 0 && x == katana.object_x && y + 1 == katana.object_y && player_inventory.weapon == 0){
             player_inventory.weapon++;
