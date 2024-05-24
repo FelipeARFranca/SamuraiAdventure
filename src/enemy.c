@@ -23,6 +23,7 @@ extern int RedOni_y;
 extern int RedOni_spawn;
 extern int RedOni_location;
 
+//INIMIGOS
 int collision(int originx, int originy, int targetx, int targety) {
   if((originx+2 == targetx || originx-2 == targetx || originx == targetx) && (originy+1 == targety || originy-1 == targety || originy == targety)) {
     return 1;
@@ -88,6 +89,40 @@ void enemyMoviment(int *enemy_spawn, int *enemyX, int *enemyY, int *enemy_damage
   }
 }
 
+int enemyCollision(int x, int y) {
+    if(map_index == BlueOni_location) {
+        if(BlueOni_spawn == 0 && BlueOni_x == x && BlueOni_y == y) return 1;
+        else return 0;
+    } else if(map_index == RedOni_location) {
+        if(RedOni_spawn == 0 && RedOni_x == x && RedOni_y == y) return 1;
+        else return 0;
+    } else {
+      return 0;
+    }
+}
+
+void printEnemy(int enemyX, int enemyY, int *enemyPrevX, int *enemyPrevY, int *enemyDamageBlink, int enemyDamaged, int color) {
+    screenGotoxy(*enemyPrevX, *enemyPrevY);
+    printf(" ");
+
+
+    screenGotoxy(enemyX, enemyY);
+
+    if(*enemyDamageBlink == 0) {    
+      if(enemyDamaged != 0) screenSetColor(YELLOW, DARKGRAY); 
+      else if(color == 1)screenSetColor(BLUE, DARKGRAY);
+      else if(color == 2)screenSetColor(RED, DARKGRAY);
+
+      printf("鬼");
+    } else {
+      printf(" ");
+      *enemyDamageBlink -= 1;
+    }
+    *enemyPrevX = enemyX;
+    *enemyPrevY = enemyY;
+
+}
+//BOSS
 void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink, int *boss_hp, int boss_speed, int *boss_tickCount, int *boss_stun, int *boss_damaged, int boss_damage) { 
     if (*boss_stun > 0) {
         *boss_stun -= 1;  
@@ -124,7 +159,6 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
                 }
                 *boss_stun = 30;
                 *boss_damaged = 1;
-
             }
         }
 
@@ -141,24 +175,12 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
             *bossY += 1;
         } 
 
-        if (Boss_collision(*bossX, *bossY, x, y) == 1) {
+        // Verificar dano na área 5x5
+        if (bossDamageArea(*bossX, *bossY, x, y) == 1) {
             hp -= boss_damage;
             *boss_stun = 20;
             playerDamageBlink = 2;
         }
-    }
-}
-
-
-int enemyCollision(int x, int y) {
-    if(map_index == BlueOni_location) {
-        if(BlueOni_spawn == 0 && BlueOni_x == x && BlueOni_y == y) return 1;
-        else return 0;
-    } else if(map_index == RedOni_location) {
-        if(RedOni_spawn == 0 && RedOni_x == x && RedOni_y == y) return 1;
-        else return 0;
-    } else {
-      return 0;
     }
 }
 
@@ -170,29 +192,6 @@ int Boss_collision(int originx, int originy, int x, int y) {
     }
 }
 
-
-void printEnemy(int enemyX, int enemyY, int *enemyPrevX, int *enemyPrevY, int *enemyDamageBlink, int enemyDamaged, int color) {
-    screenGotoxy(*enemyPrevX, *enemyPrevY);
-    printf(" ");
-
-
-    screenGotoxy(enemyX, enemyY);
-
-    if(*enemyDamageBlink == 0) {    
-      if(enemyDamaged != 0) screenSetColor(YELLOW, DARKGRAY); 
-      else if(color == 1)screenSetColor(BLUE, DARKGRAY);
-      else if(color == 2)screenSetColor(RED, DARKGRAY);
-
-      printf("鬼");
-    } else {
-      printf(" ");
-      *enemyDamageBlink -= 1;
-    }
-    *enemyPrevX = enemyX;
-    *enemyPrevY = enemyY;
-
-}
-
 void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDamageBlink, int bossDamaged) {
     // Limpar a posição anterior do Boss
     for (int i = -1; i <= 1; i++) {
@@ -201,14 +200,6 @@ void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDa
             printf(" ");
         }
     }
-
-    // Caracteres do Boss
-   /*char bossChars[3][3] = {
-        {'≊', '王', '≊'},
-        {'⌈', '鬼', '⌉'},
-        {' ', '⌈', '⌉'}
-    };
-   */ 
 
     // Atualizar a posição do Boss
     for (int i = 0; i < 3; i++) {
@@ -239,5 +230,12 @@ void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDa
 
     *bossPrevX = bossX;
     *bossPrevY = bossY;
+}
+int bossDamageArea(int originx, int originy, int targetx, int targety) {
+    if((targetx >= originx - 4 && targetx <= originx + 4) &&
+       (targety >= originy - 2 && targety <= originy + 2)) {
+        return 1;
+    }
+    return 0;
 }
 

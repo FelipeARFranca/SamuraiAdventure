@@ -63,7 +63,7 @@ int BossOni_spawn = 0;
 int BossOni_location = 3;
 
 int BossOni_hp = 10;
-int BossOni_speed = 2, BossOni_tickCount = 0;
+int BossOni_speed = 5, BossOni_tickCount = 0;
 int BossOni_x = 30, BossOni_y = 15; 
 int BossOni_prevX, BossOni_prevY;
 int BossOni_damage = 2;
@@ -71,6 +71,8 @@ int BossOni_damage = 2;
 int BossOni_stun = 0;
 int BossOni_damageBlink = 0;
 int BossOni_damaged = 0;
+
+int playerInvulnerabilityTimer = 0;
 
 
 void printxy() {

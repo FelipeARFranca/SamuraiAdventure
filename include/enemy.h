@@ -15,4 +15,5 @@ int Boss_collision(int originx, int originy, int x, int y);
 
 void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDamageBlink, int bossDamaged);
 
+int bossDamageArea(int originx, int originy, int targetx, int targety);
 #endif /* __ENEMY_H__ */
