@@ -24,6 +24,7 @@ extern int RedOni_spawn;
 extern int RedOni_location;
 
 //INIMIGOS
+
 int collision(int originx, int originy, int targetx, int targety) {
   if((originx+2 == targetx || originx-2 == targetx || originx == targetx) && (originy+1 == targety || originy-1 == targety || originy == targety)) {
     return 1;
@@ -122,13 +123,14 @@ void printEnemy(int enemyX, int enemyY, int *enemyPrevX, int *enemyPrevY, int *e
     *enemyPrevY = enemyY;
 
 }
+
 //BOSS
+
 void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink, int *boss_hp, int boss_speed, int *boss_tickCount, int *boss_stun, int *boss_damaged, int boss_damage) { 
     if (*boss_stun > 0) {
         *boss_stun -= 1;  
         return;
     }
-
     if (*boss_tickCount < boss_speed) {
         *boss_tickCount += 1;   
     } else {
@@ -161,26 +163,43 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
                 *boss_damaged = 1;
             }
         }
-
+        if (Boss_collision(*bossX+2, *bossY, x, y) == 1) {
+                    hp -= boss_damage;
+                    *boss_stun = 25;
+                    playerDamageBlink = 2;
+                }
+        if (Boss_collision(*bossX-2, *bossY, x, y) == 1) {
+                    hp -= boss_damage;
+                    *boss_stun = 25;
+                    playerDamageBlink = 2;
+                }
+        if (Boss_collision(*bossX, *bossY+1, x, y) == 1) {
+                    hp -= boss_damage;
+                    *boss_stun = 25;
+                    playerDamageBlink = 2;
+                }
+        if (Boss_collision(*bossX, *bossY-1, x, y) == 1) {
+                    hp -= boss_damage;
+                    *boss_stun = 25;
+                    playerDamageBlink = 2;
+                }
         // Movimentação do Boss
-        if (Boss_collision(*bossX-2, *bossY, x, y)==0 &&(*bossX > x && *bossX - 2 != x && *bossX - 2 != swordX) ) {
-            *bossX -= 2;
-        } else if (Boss_collision(*bossX+2, *bossY, x, y)==0 && (*bossX < x && *bossX + 2 != x && *bossX + 2 != swordX) ) {
+        int dx = x - *bossX;
+        int dy = y - *bossY;
+
+        if (dx > 0 && Boss_collision(*bossX + 2, *bossY, x, y)==0 && (*bossX + 2 != swordX)) {
             *bossX += 2;
+        } else if (dx < 0 && Boss_collision(*bossX - 2, *bossY, x, y)==0 && (*bossX - 2 != swordX)) {
+            *bossX -= 2;
         } 
 
-        if (Boss_collision(*bossX, *bossY-1, x, y)==0 && (*bossY > y && *bossY - 1 != y && *bossY - 1 != swordY) ) {
-            *bossY -= 1;
-        } else if (Boss_collision(*bossX, *bossY+1, x, y)==0 && (*bossY < y && *bossY + 1 != y && *bossY + 1 != swordY) ) {
+        if (dy > 0 && Boss_collision(*bossX, *bossY + 1, x, y)==0 && (*bossY + 1 != swordY)) {
             *bossY += 1;
+        } else if (dy < 0 && Boss_collision(*bossX, *bossY - 1, x, y)==0 && (*bossY - 1 != swordY)) {
+            *bossY -= 1;
         } 
-
-        // Verificar dano na área 5x5
-        if (bossDamageArea(*bossX, *bossY, x, y) == 1) {
-            hp -= boss_damage;
-            *boss_stun = 20;
-            playerDamageBlink = 2;
-        }
+        // Verificar dano no player
+        
     }
 }
 
@@ -191,6 +210,8 @@ int Boss_collision(int originx, int originy, int x, int y) {
         return 0;
     }
 }
+
+
 
 void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDamageBlink, int bossDamaged) {
     // Limpar a posição anterior do Boss
@@ -230,12 +251,5 @@ void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDa
 
     *bossPrevX = bossX;
     *bossPrevY = bossY;
-}
-int bossDamageArea(int originx, int originy, int targetx, int targety) {
-    if((targetx >= originx - 4 && targetx <= originx + 4) &&
-       (targety >= originy - 2 && targety <= originy + 2)) {
-        return 1;
-    }
-    return 0;
 }
 

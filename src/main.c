@@ -72,8 +72,6 @@ int BossOni_stun = 0;
 int BossOni_damageBlink = 0;
 int BossOni_damaged = 0;
 
-int playerInvulnerabilityTimer = 0;
-
 
 void printxy() {
   screenSetColor(BLUE, DARKGRAY);
