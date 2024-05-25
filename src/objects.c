@@ -11,4 +11,8 @@ void print_object(int index, int x, int y){
     screenSetColor(LIGHTGREEN, DARKGRAY);
     printf("9");
   }
+  else if (index == 3){
+    screenSetColor(YELLOW, DARKGRAY);
+    printf("刀");
+  }
 }
