@@ -19,9 +19,10 @@ inventory player_inventory;
 
 object katana;
 object magatama;
+object seitou;
 
 // player
-int hp = 15;
+int hp = 6;
 int x = 20, y = 20;
 char viewside;
 int playerDamageBlink = 0;
@@ -60,27 +61,56 @@ int RedOni_damageBlink = 0;
 int RedOni_damaged = 0;
 
 int BossOni_spawn = 0;
-int BossOni_location = 3;
+int BossOni_location = 5;
 
 int BossOni_hp = 10;
 int BossOni_speed = 3, BossOni_tickCount = 0;
-int BossOni_x = 30, BossOni_y = 15; 
+int BossOni_x = 40, BossOni_y = 5; 
 int BossOni_prevX, BossOni_prevY;
 int BossOni_damage = 2;
 
-int BossOni_stun = 0;
+int BossOni_stun = 50;
 int BossOni_damageBlink = 0;
 int BossOni_damaged = 0;
 
 
 void printxy() {
-  screenSetColor(BLUE, DARKGRAY);
-  screenGotoxy(2, 24);
-  printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, BossOni_stun);
-  screenGotoxy(2, 25);
-  printf("Blue Oni | HP: %d | X: %d | Y: %d   ", BlueOni_hp, BlueOni_x, BlueOni_y);
-  screenGotoxy(2, 26);
-  printf("Red Oni | HP: %d | X: %d | Y: %d   ", RedOni_hp, RedOni_x, RedOni_y);
+  screenSetColor(RED, DARKGRAY);
+  screenGotoxy(0, 24);
+  if (hp == 6){
+    printf("      ");
+    printf("LIFE: ❤ ❤ ❤ ❤ ❤ ❤");
+  }
+  else if (hp == 5){
+    printf("      ");
+    printf("LIFE: ❤ ❤ ❤ ❤ ❤  ");
+  }
+  else if (hp == 4){
+    printf("      ");
+    printf("LIFE: ❤ ❤ ❤ ❤    ");
+  }
+  else if (hp == 3){
+    printf("      ");
+    printf("LIFE: ❤ ❤ ❤      ");
+  }
+  else if (hp == 2){
+    printf("      ");
+    printf("LIFE: ❤ ❤        ");
+  }
+  else if (hp == 1){
+    printf("      ");
+    printf("LIFE: ❤          ");
+  }
+  else if (hp <= 0){
+    printf("      ");
+    printf("LIFE:             ");
+  }
+  //screenGotoxy(2, 25);
+  //printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, BossOni_stun);
+  //screenGotoxy(2, 25);
+  //printf("Blue Oni | HP: %d | X: %d | Y: %d   ", BlueOni_hp, BlueOni_x, BlueOni_y);
+  //screenGotoxy(2, 26);
+  //printf("Red Oni | HP: %d | X: %d | Y: %d   ", RedOni_hp, RedOni_x, RedOni_y);
 }
 
 void printKey(int ch) {
@@ -132,6 +162,9 @@ int main() {
           if (map_index == 2 && x == magatama.object_x && y - 1 == magatama.object_y && player_inventory.key == 0){
             player_inventory.key++;
           }
+          if (map_index == 7 && x == seitou.object_x && y - 1 == seitou.object_y && player_inventory.weapon == 0){
+            player_inventory.weapon += 2;
+          }
           newY = y - 1;
         }
         viewside = 'U';
@@ -154,6 +187,9 @@ int main() {
           if (map_index == 2 && x == magatama.object_x && y + 1 == magatama.object_y && player_inventory.key == 0){
             player_inventory.key++;
           }
+          if (map_index == 7 && x == seitou.object_x && y + 1 == seitou.object_y && player_inventory.weapon == 0){
+            player_inventory.weapon += 2;
+          }
           newY = y + 1;
         }
         viewside = 'D';
@@ -172,6 +208,9 @@ int main() {
           if (map_index == 2 && x - 2 == magatama.object_x && y == magatama.object_y && player_inventory.key == 0){
               player_inventory.key++;
             }
+          if (map_index == 7 && x - 2 == seitou.object_x && y == seitou.object_y && player_inventory.weapon == 0){
+              player_inventory.weapon += 2;
+            }
           newX = x - 2;
         }
         viewside = 'L';
@@ -189,6 +228,9 @@ int main() {
             }
           if (map_index == 2 && x + 2 == magatama.object_x && y == magatama.object_y && player_inventory.key == 0){
               player_inventory.key++; 
+            }
+          if (map_index == 7 && x + 2 == seitou.object_x && y == seitou.object_y && player_inventory.weapon == 0){
+              player_inventory.weapon += 2;
             }
           newX = x + 2;
         }
@@ -225,14 +267,69 @@ int main() {
         }
       }
 
+      if(player_inventory.weapon > 1){
+        swordDamage = 4;
+      }
+
+      if(BossOni_hp > 0){
+        for (int j = 32; j < 48; j++) {
+          game_map[5].map_[j][1] = '1';
+        }
+      }
+      else{
+        for (int j = 32; j < 48; j++) {
+          game_map[5].map_[j][1] = '0';
+        }
+      }
+
+      if (map_index == 5 && newY < 23){
+        for (int j = 32; j < 48; j++) {
+          game_map[5].map_[j][23] = '1';
+        }
+      }
+
+      if (map_index == 3 && x == 22 && y == 12){
+        if (player_inventory.weapon == 1 || player_inventory.key == 0){
+          screenGotoxy(38, 6);
+          screenSetColor(WHITE, DARKGRAY);
+          printf("。。。");
+        }
+        else{
+          screenGotoxy(38, 6);
+          screenSetColor(WHITE, DARKGRAY);
+          printf("左の方へ");
+        }
+      }
+      else{
+        screenGotoxy(32, 6);
+        printf("                       ");
+      }
+
+
       if (ch == 44) {
         map_index = 0;
       }
       if (ch == 46) {
-        map_index = 1;
+        map_clear();
+        map_index = 5;
       }
 
       print_MAP();
+
+      if (map_index == 3){
+        screenGotoxy(20, 12);
+        if (player_inventory.weapon == 1 || player_inventory.key == 0){
+          printf("?");
+        }
+        else {
+          printf("!");
+        }
+      }
+      else{
+        screenGotoxy(20, 12);
+        printf("  ");
+      }
+
       if (map_index == 0 && player_inventory.weapon != 1){
         print_object(katana.object_index, katana.object_x, katana.object_y);
       }
@@ -245,6 +342,13 @@ int main() {
       }
       else{
         screenGotoxy(magatama.object_x, magatama.object_y);
+        printf(" ");
+      }
+      if (map_index == 7 && player_inventory.weapon < 2){
+        print_object(seitou.object_index, seitou.object_x, seitou.object_y);
+      }
+      else{
+        screenGotoxy(seitou.object_x, seitou.object_y);
         printf(" ");
       }
 
