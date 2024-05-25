@@ -11,7 +11,12 @@ extern int swordY;
 extern int playerDamageBlink;
 
 void printSword() {
-  screenSetColor(WHITE, DARKGRAY);
+  if (player_inventory.weapon == 1){
+    screenSetColor(WHITE, DARKGRAY);
+  }
+  else if (player_inventory.weapon > 1){
+    screenSetColor(YELLOW, DARKGRAY);
+  }
   screenGotoxy(swordX, swordY);
   printf(" ");
 
@@ -57,6 +62,35 @@ void printPlayer(int nextX, int nextY) {
 }
 
 void print_inv_hud(int weapon, int key){
-  screenGotoxy(59, 24);
-  printf("Weapon = %d | Key = %d", weapon, key);
+  screenSetColor(WHITE, DARKGRAY);
+  screenGotoxy(58, 24);
+  printf("INVENTORY");
+  screenGotoxy(58, 25);
+  printf("Weapon:");
+  if (weapon == 0){
+    screenGotoxy(65, 25);
+    printf(" ");
+  }
+  else if (weapon == 1){
+    screenGotoxy(65, 25);
+    printf("『 刀 』");
+  }
+  else if (weapon > 1){
+    screenGotoxy(65, 25);
+    screenSetColor(YELLOW, DARKGRAY);
+    printf("『 天照の聖刀 』");
+  }
+
+  screenGotoxy(58, 26);
+  printf("Key:");
+  if(key == 0){
+    screenSetColor(WHITE, DARKGRAY);
+    screenGotoxy(63, 26);
+    printf(" ");
+  }
+  else{
+    screenSetColor(LIGHTGREEN, DARKGRAY);
+    screenGotoxy(63, 26);
+    printf("『 9 』");
+  }
 }
