@@ -139,7 +139,7 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
 
         // Receber dano do player
         if (swordactivetime > 0 && swordstun == 0) {
-            if (collision(*bossX, *bossY, swordX, swordY) == 1) {
+            if ((Boss_collision(*bossX+2, *bossY, swordX, swordY) == 1)||(Boss_collision(*bossX-2, *bossY, swordX, swordY) == 1)||(Boss_collision(*bossX, *bossY+1, swordX, swordY) == 1)||(Boss_collision(*bossX, *bossY-1, swordX, swordY) == 1) ) {
                 swordstun = 40;
                 swordactivetime = 0;
                 screenGotoxy(swordX, swordY);
@@ -161,44 +161,45 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
                 }
                 *boss_stun = 30;
                 *boss_damaged = 1;
+                return;
             }
         }
-        if (Boss_collision(*bossX+2, *bossY, x, y) == 1) {
-                    hp -= boss_damage;
-                    *boss_stun = 25;
-                    playerDamageBlink = 2;
-                }
-        if (Boss_collision(*bossX-2, *bossY, x, y) == 1) {
-                    hp -= boss_damage;
-                    *boss_stun = 25;
-                    playerDamageBlink = 2;
-                }
-        if (Boss_collision(*bossX, *bossY+1, x, y) == 1) {
-                    hp -= boss_damage;
-                    *boss_stun = 25;
-                    playerDamageBlink = 2;
-                }
-        if (Boss_collision(*bossX, *bossY-1, x, y) == 1) {
-                    hp -= boss_damage;
-                    *boss_stun = 25;
-                    playerDamageBlink = 2;
-                }
         // Movimentação do Boss
         int dx = x - *bossX;
         int dy = y - *bossY;
 
-        if (dx > 0 && Boss_collision(*bossX + 2, *bossY, x, y)==0 && (*bossX + 2 != swordX)) {
+        if (dx > 0 && Boss_collision(*bossX + 2, *bossY, x, y)==0 && Boss_collision(*bossX + 2, *bossY, swordX, swordY)==0) {
             *bossX += 2;
-        } else if (dx < 0 && Boss_collision(*bossX - 2, *bossY, x, y)==0 && (*bossX - 2 != swordX)) {
+        } else if (dx < 0 && Boss_collision(*bossX - 2, *bossY, x, y)==0 && Boss_collision(*bossX -2, *bossY, swordX, swordY)==0) {
             *bossX -= 2;
         } 
 
-        if (dy > 0 && Boss_collision(*bossX, *bossY + 1, x, y)==0 && (*bossY + 1 != swordY)) {
+        if (dy > 0 && Boss_collision(*bossX, *bossY + 1, x, y)==0 && Boss_collision(*bossX , *bossY+1, swordX, swordY)==0) {
             *bossY += 1;
-        } else if (dy < 0 && Boss_collision(*bossX, *bossY - 1, x, y)==0 && (*bossY - 1 != swordY)) {
+        } else if (dy < 0 && Boss_collision(*bossX, *bossY - 1, x, y)==0 && Boss_collision(*bossX, *bossY-1, swordX, swordY)==0) {
             *bossY -= 1;
         } 
         // Verificar dano no player
+        if (Boss_collision(*bossX+2, *bossY, x, y) == 1) {
+                    hp -= boss_damage;
+                    *boss_stun = 35;
+                    playerDamageBlink = 2;
+                }
+        if (Boss_collision(*bossX-2, *bossY, x, y) == 1) {
+                    hp -= boss_damage;
+                    *boss_stun = 35;
+                    playerDamageBlink = 2;
+                }
+        if (Boss_collision(*bossX, *bossY+1, x, y) == 1) {
+                    hp -= boss_damage;
+                    *boss_stun = 35;
+                    playerDamageBlink = 2;
+                }
+        if (Boss_collision(*bossX, *bossY-1, x, y) == 1) {
+                    hp -= boss_damage;
+                    *boss_stun = 35;
+                    playerDamageBlink = 2;
+                }
         
     }
 }

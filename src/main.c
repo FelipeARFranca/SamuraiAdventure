@@ -21,7 +21,7 @@ object katana;
 object magatama;
 
 // player
-int hp = 6;
+int hp = 15;
 int x = 20, y = 20;
 char viewside;
 int playerDamageBlink = 0;
@@ -63,7 +63,7 @@ int BossOni_spawn = 0;
 int BossOni_location = 3;
 
 int BossOni_hp = 10;
-int BossOni_speed = 5, BossOni_tickCount = 0;
+int BossOni_speed = 3, BossOni_tickCount = 0;
 int BossOni_x = 30, BossOni_y = 15; 
 int BossOni_prevX, BossOni_prevY;
 int BossOni_damage = 2;
@@ -76,7 +76,7 @@ int BossOni_damaged = 0;
 void printxy() {
   screenSetColor(BLUE, DARKGRAY);
   screenGotoxy(2, 24);
-  printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, BlueOni_tickCount);
+  printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, BossOni_stun);
   screenGotoxy(2, 25);
   printf("Blue Oni | HP: %d | X: %d | Y: %d   ", BlueOni_hp, BlueOni_x, BlueOni_y);
   screenGotoxy(2, 26);

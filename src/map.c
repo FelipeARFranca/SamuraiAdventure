@@ -138,8 +138,12 @@ void map_clear(){
   }
 
   if(BossOni_spawn == 0 && map_index == BossOni_location) {
-    screenGotoxy(BossOni_x, BossOni_y);
-    printf(" ");
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            screenGotoxy(BossOni_x + 2 * i, BossOni_y + j);
+            printf(" ");
+        }
+    }
   }
 }
 
