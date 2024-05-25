@@ -23,6 +23,8 @@ extern int RedOni_y;
 extern int RedOni_spawn;
 extern int RedOni_location;
 
+extern int BossOni_hp;
+
 //INIMIGOS
 
 int collision(int originx, int originy, int targetx, int targety) {
@@ -205,7 +207,7 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
 }
 
 int Boss_collision(int originx, int originy, int x, int y) {
-    if((originx+2 >= x && originx-2 <= x) && (originy+1 >= y && originy-1 <= y) && map_index == 3) {
+    if((originx+2 >= x && originx-2 <= x) && (originy+1 >= y && originy-1 <= y) && map_index == 5 && BossOni_hp > 0) {
         return 1;
     } else {
         return 0;
