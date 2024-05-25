@@ -7,6 +7,7 @@ extern mapa game_map[8];
 extern inventory player_inventory;
 extern object katana;
 extern object magatama;
+extern object seitou;
 
 extern int map_index;
 
@@ -426,6 +427,17 @@ void draw_map() {
     game_map[3].map_[0][j] = '5';
   }
 
+  game_map[3].map_[20][11] = '1';
+  game_map[3].map_[21][11] = '1';
+  game_map[3].map_[20][12] = '1';
+  game_map[3].map_[21][12] = '1';
+  game_map[3].map_[20][13] = '1';
+  game_map[3].map_[21][13] = '1';
+  game_map[3].map_[19][11] = '1';
+  game_map[3].map_[19][12] = '1';
+  game_map[3].map_[19][13] = '1';
+  
+
   //MAP 4-----------------------------------------------------------------------------------------------------------------
 
   for (int i = 0; i < MAXX; i++) {
@@ -620,4 +632,8 @@ void draw_map() {
   magatama.object_index = 2;
   magatama.object_x = 70;
   magatama.object_y = 12;
+
+  seitou.object_index = 3;
+  seitou.object_x = 40;
+  seitou.object_y = 12;
 }
