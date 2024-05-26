@@ -24,6 +24,8 @@ extern int RedOni_spawn;
 extern int RedOni_location;
 
 extern int BossOni_hp;
+extern int BossOni_location;
+extern int BossOni_spawn;
 
 //INIMIGOS
 
@@ -152,13 +154,13 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
 
                 if (*boss_hp <= 0) {
                     *boss_spawn = 1;
-                    // Limpar a área do Boss
-                    for (int i = -1; i <= 1; i++) {
-                        for (int j = -1; j <= 1; j++) {
-                            screenGotoxy(*bossX + 2 * i, *bossY + j);
-                            printf(" ");
-                        }
-                    }
+                    
+                    screenGotoxy(*bossX-2, *bossY-1);
+                    printf("      ");
+                    screenGotoxy(*bossX-2, *bossY);
+                    printf("      ");
+                    screenGotoxy(*bossX-2, *bossY+1);
+                    printf("      ");
                     return;
                 }
                 *boss_stun = 30;
@@ -181,6 +183,7 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
         } else if (dy < 0 && Boss_collision(*bossX, *bossY - 1, x, y)==0 && Boss_collision(*bossX, *bossY-1, swordX, swordY)==0) {
             *bossY -= 1;
         } 
+
         // Verificar dano no player
         if (Boss_collision(*bossX+2, *bossY, x, y) == 1) {
                     hp -= boss_damage;
@@ -207,7 +210,7 @@ void BossMoviment(int *boss_spawn, int *bossX, int *bossY, int *boss_damageBlink
 }
 
 int Boss_collision(int originx, int originy, int x, int y) {
-    if((originx+2 >= x && originx-2 <= x) && (originy+1 >= y && originy-1 <= y) && map_index == 5 && BossOni_hp > 0) {
+    if((originx+2 >= x && originx-2 <= x) && (originy+1 >= y && originy-1 <= y) && map_index == BossOni_location && BossOni_hp > 0) {
         return 1;
     } else {
         return 0;
@@ -218,34 +221,25 @@ int Boss_collision(int originx, int originy, int x, int y) {
 
 void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDamageBlink, int bossDamaged) {
     // Limpar a posição anterior do Boss
-    for (int i = -1; i <= 1; i++) {
-        for (int j = -1; j <= 1; j++) {
-            screenGotoxy(*bossPrevX + 2 * i, *bossPrevY + j);
-            printf(" ");
-        }
+    screenGotoxy(*bossPrevX-2, *bossPrevY-1);
+    printf("      ");
+    screenGotoxy(*bossPrevX-2, *bossPrevY);
+    printf("      ");
+    screenGotoxy(*bossPrevX-2, *bossPrevY+1);
+    printf("      ");
+
+    if(*bossDamageBlink == 0) {    
+      if(bossDamaged != 0) screenSetColor(YELLOW, DARKGRAY); 
+      else screenSetColor(MAGENTA, DARKGRAY);
     }
 
-    // Atualizar a posição do Boss
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            screenGotoxy(bossX + 2 * (j - 1), bossY + (i - 1));
-            if (*bossDamageBlink == 0) {    
-                if (bossDamaged != 0) screenSetColor(YELLOW, DARKGRAY); 
-                else screenSetColor(GREEN, DARKGRAY); // Cor do Boss
-
-                if(i==0 && j==0) printf("≊");
-                if(i==0 && j==1) printf("王");
-                if(i==0 && j==2) printf("≊");
-                if(i==1 && j==0) printf("⌈");
-                if(i==1 && j==1) printf("鬼");
-                if(i==1 && j==2) printf("⌉");
-                if(i==2 && j==0) printf(" ");
-                if(i==2 && j==1) printf("⌈");
-                if(i==2 && j==2) printf("⌉");
-            } else {
-                printf(" ");
-            }
-        }
+    if(BossOni_spawn == 0) {
+        screenGotoxy(bossX-2, bossY-1);
+        printf("≊ 王 ≊");
+        screenGotoxy(bossX-2, bossY);
+        printf("⌈ 鬼 ⌉");
+        screenGotoxy(bossX-2, bossY+1);
+        printf("  ⌈ ⌉");
     }
 
     if (*bossDamageBlink > 0) {

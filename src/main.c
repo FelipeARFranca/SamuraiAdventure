@@ -9,10 +9,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 //mapa
 mapa game_map[8];
-int map_index = 0;
+int map_index = 6;
 
 //inventario
 inventory player_inventory;
@@ -21,9 +22,24 @@ object katana;
 object magatama;
 object seitou;
 
+int play_time = 0;
+int gameover = 0;
+int gamewin = 0;
+
+//lista de vencedores
+struct vencedores {
+  char nome[20];
+  int tempo;
+  struct vencedores *next;
+};
+
+struct vencedores *head = NULL;
+
 // player
+int player_spawn = 0;
+
 int hp = 6;
-int x = 20, y = 20;
+int x = 21, y = 20;
 char viewside;
 int playerDamageBlink = 0;
 
@@ -77,46 +93,90 @@ int BossOni_damaged = 0;
 void printxy() {
   screenSetColor(RED, DARKGRAY);
   screenGotoxy(0, 24);
-  if (hp == 6){
-    printf("      ");
-    printf("LIFE: ❤ ❤ ❤ ❤ ❤ ❤");
-  }
-  else if (hp == 5){
-    printf("      ");
-    printf("LIFE: ❤ ❤ ❤ ❤ ❤  ");
-  }
-  else if (hp == 4){
-    printf("      ");
-    printf("LIFE: ❤ ❤ ❤ ❤    ");
-  }
-  else if (hp == 3){
-    printf("      ");
-    printf("LIFE: ❤ ❤ ❤      ");
-  }
-  else if (hp == 2){
-    printf("      ");
-    printf("LIFE: ❤ ❤        ");
-  }
-  else if (hp == 1){
-    printf("      ");
-    printf("LIFE: ❤          ");
-  }
-  else if (hp <= 0){
-    printf("      ");
-    printf("LIFE:             ");
-  }
-  //screenGotoxy(2, 25);
-  //printf("Player | HP: %d | X: %d | Y: %d | S: %c | T: %d ", hp, x, y, viewside, BossOni_stun);
-  //screenGotoxy(2, 25);
-  //printf("Blue Oni | HP: %d | X: %d | Y: %d   ", BlueOni_hp, BlueOni_x, BlueOni_y);
-  //screenGotoxy(2, 26);
-  //printf("Red Oni | HP: %d | X: %d | Y: %d   ", RedOni_hp, RedOni_x, RedOni_y);
+  printf("      ");
+  printf("LIFE:");
+  for(int i = 0; i < hp+2; i++) printf("  ");
+  screenGotoxy(12, 24);
+  for(int i = 0; i < hp; i++) printf("❤ ");
 }
 
 void printKey(int ch) {
   screenSetColor(YELLOW, DARKGRAY);
   screenGotoxy(34, 22);
   printf("Key code: %d ", ch);
+}
+
+void add_jogador(struct vencedores **head, char *nome, int time) {
+  struct vencedores *n = *head;
+  struct vencedores *novo = (struct vencedores*) malloc(sizeof(struct vencedores));
+  struct vencedores *anterior = NULL;
+
+  strcpy(novo->nome,nome);
+  novo->tempo = time;
+  novo->next = NULL;
+
+  if(*head == NULL) {
+    *head = novo;
+    return;
+  }
+
+  if((*head)->tempo > novo->tempo) {
+    novo->next = *head;
+    *head = novo;
+    return;
+  }
+
+  while(n != NULL && n->tempo <= novo->tempo) {
+    anterior = n;
+    n = n->next;
+  }
+
+  if (anterior != NULL) {
+    anterior->next = novo;
+  }
+
+  novo->next = n;
+  return;
+}
+
+void loadwinnerlist() {
+  FILE *list;
+  char nome[20];
+  int tempo;
+
+  list = fopen("winners.txt","r");
+  
+  while(fscanf(list,"%s %d", nome, &tempo) == 2) {
+    add_jogador(&head, nome, tempo);
+  }
+
+  fclose(list);
+}
+
+void printwinnerlist(struct vencedores *head) {
+    struct vencedores *n = head;
+    int i = 1;
+    while (n != NULL && i <= 10) {
+        printf("%d. %s: %d ticks\n",i, n->nome, n->tempo);
+        n = n->next;
+        i++;
+    }
+    printf("\n");
+}
+
+void writewinnerlist() {
+  FILE *list;
+
+  list = fopen("winners.txt","w");
+
+  struct vencedores *n = head;
+
+  while (n != NULL) {
+      fprintf(list,"%s %d\n", n->nome, n->tempo);
+      n = n->next;
+  }
+
+  fclose(list);
 }
 
 int main() {
@@ -134,15 +194,18 @@ int main() {
   int newX = 40;
   int newY = 19;
 
-  while (ch != 10) // enter
+  while (gameover == 0 && gamewin == 0) // enter
   {
     // Handle user input
-    if (keyhit()) {
-      ch = readch();
+    if(swordactivetime == 0) {
+      if (keyhit()) {
+        ch = readch();
+      }
     }
 
     // Update game state (move elements, verify collision, etc)
-    if (timerTimeOver() == 1) {
+    if (timerTimeOver() == 1 && gameover == 0 && gamewin == 0) {
+      play_time++;
 
       //W
       if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1) == 0 && Boss_collision(BossOni_x, BossOni_y,x, y - 1) == 0){
@@ -248,6 +311,7 @@ int main() {
 
             swordX = 0;
             swordY = 0;
+            swordstun = 10;
           }
       } else if(swordstun > 0) {
         swordstun--;
@@ -305,6 +369,12 @@ int main() {
         printf("                       ");
       }
 
+
+      if(map_index == 6) {
+        screenGotoxy(20,20);
+        printf("Θ");
+        if(x == 20 && y == 20) gamewin = 1;
+      }
 
       if (ch == 44) {
         map_index = 0;
@@ -367,6 +437,14 @@ int main() {
           printBoss(BossOni_x, BossOni_y, &BossOni_prevX, &BossOni_prevY, &BossOni_damageBlink, BossOni_damaged);
       }
 
+      if(ch == 10) {
+
+        break;
+      }
+
+      if(hp <= 0) {
+        gameover = 1;
+      }
 
       printPlayer(newX, newY);
       printxy();
@@ -375,10 +453,51 @@ int main() {
       screenUpdate();
     }
   }
-
-  keyboardDestroy();
   screenDestroy();
+  keyboardDestroy();
   timerDestroy();
 
+  char final;
+
+  if(gameover == 1) {
+      printf(" ██████   █████  ███    ███ ███████      ██████  ██    ██ ███████ ██████\n");
+      printf("██       ██   ██ ████  ████ ██          ██    ██ ██    ██ ██      ██   ██\n");
+      printf("██   ███ ███████ ██ ████ ██ █████       ██    ██ ██    ██ █████   ██████\n");
+      printf("██    ██ ██   ██ ██  ██  ██ ██          ██    ██  ██  ██  ██      ██   ██\n");
+      printf(" ██████  ██   ██ ██      ██ ███████      ██████    ████   ███████ ██   ██\n\n");
+      printf("Aperte ENTER para fechar o jogo");
+      scanf("%c", &final);
+      printf("\e[1;1H\e[2J");
+  }
+
+  if(gamewin == 1) {
+    char nome_player[20];
+    char c;
+    int i = 0;
+    loadwinnerlist();
+
+
+
+    printf("Você venceu! Escreva seu nome para a Lista de Vencedores:");
+
+    while ((c = getchar()) != '\n' && i < 19) {
+      if(c == '\n' && c == '\0') break;
+      nome_player[i] = c;
+      i++;
+    }
+
+    printf("%s, tempo de jogo: %d\n\n", nome_player, play_time);
+    add_jogador(&head, nome_player, play_time);
+
+    printf("Lista dos 10 Melhores:\n");
+    printwinnerlist(head);
+    printf("\n\n");
+    printf("Aperte ENTER para fechar o jogo\n");
+    scanf("%c", &final);
+
+    writewinnerlist();
+    printf("\e[1;1H\e[2J");
+
+  }
   return 0;
 }
