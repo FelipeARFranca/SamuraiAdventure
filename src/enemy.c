@@ -249,4 +249,3 @@ void printBoss(int bossX, int bossY, int *bossPrevX, int *bossPrevY, int *bossDa
     *bossPrevX = bossX;
     *bossPrevY = bossY;
 }
-
