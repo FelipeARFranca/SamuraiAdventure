@@ -181,6 +181,35 @@ void writewinnerlist() {
 
 int main() {
   static int ch = 0;
+  char start;
+  printf("\e[1;1H\e[2J");
+  printf("███████  █████  ███    ███ ██    ██ ██████   █████  ██      █████  ██████  ██    ██ ███████ ███    ██ ████████ ██    ██ ██████  ███████\n");
+  printf("██      ██   ██ ████  ████ ██    ██ ██   ██ ██   ██ ██     ██   ██ ██   ██ ██    ██ ██      ████   ██    ██    ██    ██ ██   ██ ██     \n");
+  printf("███████ ███████ ██ ████ ██ ██    ██ ██████  ███████ ██     ███████ ██   ██ ██    ██ █████   ██ ██  ██    ██    ██    ██ ██████  █████  \n");
+  printf("     ██ ██   ██ ██  ██  ██ ██    ██ ██   ██ ██   ██ ██     ██   ██ ██   ██  ██  ██  ██      ██  ██ ██    ██    ██    ██ ██   ██ ██     \n");
+  printf("███████ ██   ██ ██      ██  ██████  ██   ██ ██   ██ ██     ██   ██ ██████    ████   ███████ ██   ████    ██     ██████  ██   ██ ███████\n\n");
+  printf("                                                           Aperte ENTER\n");
+  scanf("%c", &start);
+  printf("\e[1;1H\e[2J");
+  printf("O Castelo Dourado『黄金城』, onde seu senhor residia, foi tomado pelo Rei Oni『王鬼』, que se\n");
+  printf("instalou lá e trancou as portas com um selo mágico. Este selo só pode ser quebrado com uma\n");
+  printf("chave em formato de magatama『9』, escondida em algum lugar no mapa. Como samurai『侍』, é\n");
+  printf("sua missão libertar o castelo do controle do Rei Oni e restaurar a paz ao seu lar.\n\n");
+  printf("Você deve encontrar a chave, abrir o castelo e derrotar o Rei Oni. Para isso, pegue sua katana『刀』\n");
+  printf("e explore o mapa. Cuidado! Onis『鬼』estarão vagando nos arredores do castelo.\n\n\n");
+  printf("Controles:\n\n");
+  printf("CIMA ↑ : W\n");
+  printf("BAIXO ↓ : S\n");
+  printf("ESQUERDA ← : A\n");
+  printf("DIREITA → : D\n");
+  printf("ATAQUE: SPACE\n\n");
+  printf("Boa sorte!\n\n");
+  printf("Aperte ENTER para começar");
+  scanf("%c", &start);
+  printf("\e[1;1H\e[2J");
+
+
+
 
   screenInit(0);
   keyboardInit();
@@ -371,9 +400,10 @@ int main() {
 
 
       if(map_index == 6) {
-        screenGotoxy(20,20);
-        printf("Θ");
-        if(x == 20 && y == 20) gamewin = 1;
+        screenGotoxy(40,8);
+        screenSetColor(YELLOW, DARKGRAY);
+        printf("🪦");
+        if(x == 40 && y == 8) gamewin = 1;
       }
 
       if (ch == 44) {
@@ -476,9 +506,14 @@ int main() {
     int i = 0;
     loadwinnerlist();
 
+    printf("██    ██ ██ ████████  ██████  ██████  ██  █████  ██\n");
+    printf("██    ██ ██    ██    ██    ██ ██   ██ ██ ██   ██ ██\n");
+    printf("██    ██ ██    ██    ██    ██ ██████  ██ ███████ ██\n");
+    printf(" ██  ██  ██    ██    ██    ██ ██   ██ ██ ██   ██   \n");
+    printf("  ████   ██    ██     ██████  ██   ██ ██ ██   ██ ██\n\n");
 
 
-    printf("Você venceu! Escreva seu nome para a Lista de Vencedores:");
+    printf("Escreva seu nome na Tabula da História e entre para a Lista de Vencedores: ");
 
     while ((c = getchar()) != '\n' && i < 19) {
       if(c == '\n' && c == '\0') break;
@@ -486,18 +521,19 @@ int main() {
       i++;
     }
 
-    printf("%s, tempo de jogo: %d\n\n", nome_player, play_time);
+    printf("%s, tempo de jogo: %d ticks\n\n", nome_player, play_time);
     add_jogador(&head, nome_player, play_time);
 
-    printf("Lista dos 10 Melhores:\n");
+    printf("Lista dos 10 melhores tempos:\n\n");
     printwinnerlist(head);
     printf("\n\n");
+    printf("ありがとうございます！\n");
+    printf("Obrigado por jogar nosso jogo!\n\n");
     printf("Aperte ENTER para fechar o jogo\n");
     scanf("%c", &final);
 
     writewinnerlist();
     printf("\e[1;1H\e[2J");
-
   }
   return 0;
 }
