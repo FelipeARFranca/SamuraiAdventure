@@ -407,14 +407,6 @@ int main() {
         if(x == 40 && y == 8) gamewin = 1;
       }
 
-      if (ch == 44) {
-        map_index = 0;
-      }
-      if (ch == 46) {
-        map_clear();
-        map_index = 5;
-      }
-
       print_MAP();
 
       if (map_index == 3){
@@ -466,11 +458,6 @@ int main() {
       if (BossOni_spawn == 0 && map_index == BossOni_location) {
           BossMoviment(&BossOni_spawn, &BossOni_x, &BossOni_y, &BossOni_damageBlink, &BossOni_hp, BossOni_speed, &BossOni_tickCount, &BossOni_stun, &BossOni_damaged, BossOni_damage);
           printBoss(BossOni_x, BossOni_y, &BossOni_prevX, &BossOni_prevY, &BossOni_damageBlink, BossOni_damaged);
-      }
-
-      if(ch == 10) {
-
-        break;
       }
 
       if(hp <= 0) {
