@@ -230,7 +230,6 @@ int main() {
     if(swordactivetime == 0) {
       if (keyhit()) {
         ch = readch();
-        printKey(ch);
       }
     }
 
