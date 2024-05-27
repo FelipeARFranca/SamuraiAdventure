@@ -10,10 +10,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 //mapa
 mapa game_map[8];
-int map_index = 6;
+int map_index = 0;
 
 //inventario
 inventory player_inventory;
@@ -229,6 +230,7 @@ int main() {
     if(swordactivetime == 0) {
       if (keyhit()) {
         ch = readch();
+        printKey(ch);
       }
     }
 
@@ -237,7 +239,7 @@ int main() {
       play_time++;
 
       //W
-      if (ch == 119 /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1) == 0 && Boss_collision(BossOni_x, BossOni_y,x, y - 1) == 0){
+      if ((ch == 119|| ch == 87) /*&& y - 1 >= MINY + 1*/ && map_collision(x, y - 1) == 0 && enemyCollision(x, y - 1) == 0 && Boss_collision(BossOni_x, BossOni_y,x, y - 1) == 0){
         if (map_index == 0 && x == 40 && y == 16){
           map_clear();
           map_index = map_change(map_index, x, y - 1);
@@ -263,7 +265,7 @@ int main() {
         ch = 0;
 
       //S
-      } else if (ch == 115 /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1) == 0 && Boss_collision(BossOni_x, BossOni_y,x, y + 1) == 0){
+      } else if ((ch == 115||ch == 83) /*&& y + 1 <= MAXY - 1*/ && map_collision(x, y + 1) == 0 && enemyCollision(x, y + 1) == 0 && Boss_collision(BossOni_x, BossOni_y,x, y + 1) == 0){
         if(y == 23) {
           map_clear();
           map_index = map_change(map_index, x, y + 1);
@@ -288,7 +290,7 @@ int main() {
         ch = 0;
 
       //A
-      } else if (ch == 97 /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y) == 0 && Boss_collision(BossOni_x, BossOni_y,x - 2,y) == 0) {
+      } else if ((ch == 97||ch == 65) /*&& x - 2 >= MINX + 1*/ && map_collision(x - 2, y) == 0 && enemyCollision(x - 2, y) == 0 && Boss_collision(BossOni_x, BossOni_y,x - 2,y) == 0) {
         if (x == 0){
           map_clear();
           map_index = map_change(map_index, x - 2, y);
@@ -309,7 +311,7 @@ int main() {
         ch = 0;
 
       //D
-      } else if (ch == 100 /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y) == 0 && Boss_collision(BossOni_x, BossOni_y,x + 2 ,y) == 0) {
+      } else if ((ch == 100||ch==68) /*&& x + 2 < MAXX - 1*/ && map_collision(x + 2, y) == 0 && enemyCollision(x + 2, y) == 0 && Boss_collision(BossOni_x, BossOni_y,x + 2 ,y) == 0) {
         if (x == 80){
           map_clear();
           map_index = map_change(map_index, x + 2, y);
@@ -503,7 +505,7 @@ int main() {
   if(gamewin == 1) {
     char nome_player[20];
     char c;
-    int i = 0;
+    int i = 0, j = 10;
     loadwinnerlist();
 
     printf("██    ██ ██ ████████  ██████  ██████  ██  █████  ██\n");
@@ -516,11 +518,14 @@ int main() {
     printf("Escreva seu nome na Tabula da História e entre para a Lista de Vencedores: ");
 
     while ((c = getchar()) != '\n' && i < 19) {
-      if(c == '\n' && c == '\0') break;
-      nome_player[i] = c;
-      i++;
+      if(isalnum(c) != 0) {
+        nome_player[i] = c;
+        i++;
+      }
     }
 
+    nome_player[i] = '\0';
+    fflush(stdout);
     printf("%s, tempo de jogo: %d ticks\n\n", nome_player, play_time);
     add_jogador(&head, nome_player, play_time);
 
@@ -530,7 +535,13 @@ int main() {
     printf("ありがとうございます！\n");
     printf("Obrigado por jogar nosso jogo!\n\n");
     printf("Aperte ENTER para fechar o jogo\n");
-    scanf("%c", &final);
+    
+    while(j > 0) {
+      j--;
+    }
+
+    fflush(stdout);
+    getchar();
 
     writewinnerlist();
     printf("\e[1;1H\e[2J");

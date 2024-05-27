@@ -1,4 +1,0 @@
-felipe 32
-gustavo 38
-torres 40
-lucas 65
