@@ -11,5 +11,6 @@ typedef struct player_inv{
 void printSword();
 void printPlayer(int nextX, int nextY);
 void print_inv_hud(int weapon, int key);
+void printHP();
 
 #endif /* __PLAYER_H__ */

@@ -9,6 +9,7 @@ extern char viewside;
 extern int swordX;
 extern int swordY;
 extern int playerDamageBlink;
+extern int hp;
 
 void printSword() {
   if (player_inventory.weapon == 1){
@@ -59,6 +60,16 @@ void printPlayer(int nextX, int nextY) {
       printf(" ");
       playerDamageBlink--;
     }
+}
+
+void printHP() {
+  screenSetColor(RED, DARKGRAY);
+  screenGotoxy(0, 24);
+  printf("      ");
+  printf("LIFE:");
+  for(int i = 0; i < hp+2; i++) printf("  ");
+  screenGotoxy(12, 24);
+  for(int i = 0; i < hp; i++) printf("❤ ");
 }
 
 void print_inv_hud(int weapon, int key){

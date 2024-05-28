@@ -90,22 +90,12 @@ int BossOni_stun = 50;
 int BossOni_damageBlink = 0;
 int BossOni_damaged = 0;
 
-
-void printxy() {
-  screenSetColor(RED, DARKGRAY);
-  screenGotoxy(0, 24);
-  printf("      ");
-  printf("LIFE:");
-  for(int i = 0; i < hp+2; i++) printf("  ");
-  screenGotoxy(12, 24);
-  for(int i = 0; i < hp; i++) printf("❤ ");
-}
-
-void printKey(int ch) {
+// função de desenvolvedor
+/* void printKey(int ch) {
   screenSetColor(YELLOW, DARKGRAY);
   screenGotoxy(34, 22);
   printf("Key code: %d ", ch);
-}
+} */
 
 void add_jogador(struct vencedores **head, char *nome, int time) {
   struct vencedores *n = *head;
@@ -208,8 +198,6 @@ int main() {
   printf("Aperte ENTER para começar");
   scanf("%c", &start);
   printf("\e[1;1H\e[2J");
-
-
 
 
   screenInit(0);
@@ -407,14 +395,6 @@ int main() {
         if(x == 40 && y == 8) gamewin = 1;
       }
 
-      if (ch == 44) {
-        map_index = 0;
-      }
-      if (ch == 46) {
-        map_clear();
-        map_index = 5;
-      }
-
       print_MAP();
 
       if (map_index == 3){
@@ -468,17 +448,32 @@ int main() {
           printBoss(BossOni_x, BossOni_y, &BossOni_prevX, &BossOni_prevY, &BossOni_damageBlink, BossOni_damaged);
       }
 
+      //finaliza o jogo
       if(ch == 10) {
-
         break;
       }
+
+      // ATALHOS DE DESENVOLVEDOR
+      /*
+      
+      // TP PARA SALA INICIAL
+      if (ch == 44) {
+        map_index = 0;
+      }
+
+      // TP PRA SALA DO BOSS
+      if (ch == 46) {
+        map_clear();
+        map_index = 5;
+      }
+      */
 
       if(hp <= 0) {
         gameover = 1;
       }
 
       printPlayer(newX, newY);
-      printxy();
+      printHP();
       print_inv_hud(player_inventory.weapon, player_inventory.key);
 
       screenUpdate();
