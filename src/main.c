@@ -528,7 +528,7 @@ int main() {
     printf("\n\n");
     printf("ありがとうございます！\n");
     printf("Obrigado por jogar nosso jogo!\n\n");
-    printf("Creditos: Felipe França, Lucas Ferreira Torres, Luís Gustavo Melo");
+    printf("Creditos: Felipe França, Lucas Ferreira Torres, Luís Gustavo Melo\n");
     printf("Aperte ENTER para fechar o jogo\n");
     
     while(j > 0) {
