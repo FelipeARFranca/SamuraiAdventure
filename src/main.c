@@ -333,6 +333,8 @@ int main() {
           }
       } else if(swordstun > 0) {
         swordstun--;
+        swordX = 0;
+        swordY = 0;
         if(swordstun == 0) {
           swordX = 0;
           swordY = 0;

@@ -52,11 +52,11 @@ void enemyMoviment(int *enemy_spawn, int *enemyX, int *enemyY, int *enemy_damage
       //receber dano do player
       if(swordactivetime > 0 && swordstun == 0) {
         if(collision(*enemyX, *enemyY, swordX, swordY) == 1) {
-          swordstun = 40;
+          swordstun = 60;
           swordactivetime = 0;
           screenGotoxy(swordX, swordY);
           printf(" ");
-
+          
           *enemy_damageBlink = 2;
           *enemy_hp -= swordDamage;
 
